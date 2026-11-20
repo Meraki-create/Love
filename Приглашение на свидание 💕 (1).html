@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Приглашение на свидание 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--rose:#e85d8a;--rose-d:#c2407a;--peach:#ffd6e0;--ink:#4a2b3d}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:"Nunito",system-ui,Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,#ffe3ec 0%,#f5d0ff 50%,#d7c9ff 100%);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow-x:hidden;
+}
+.float{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.float span{position:absolute;bottom:-40px;color:rgba(232,93,138,.35);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-110vh) rotate(360deg);opacity:0}}
+
+.card{
+  position:relative;z-index:1;width:min(500px,100%);background:rgba(255,255,255,.85);
+  backdrop-filter:blur(6px);border-radius:28px;padding:36px 28px;text-align:center;
+  box-shadow:0 20px 60px rgba(194,64,122,.25);border:2px solid rgba(255,255,255,.8);
+}
+.heart{font-size:56px;display:inline-block;animation:beat 1.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.12)}}
+h1,h2{font-family:"Dancing Script",cursive;color:var(--rose-d);margin:8px 0 6px;font-size:40px;line-height:1.15}
+h2{font-size:34px}
+p.lead{margin:0 0 22px;opacity:.85;font-size:17px}
+
+.step{display:none;animation:fade .5s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.btn{
+  font:inherit;font-weight:800;font-size:18px;border:0;border-radius:999px;padding:14px 30px;
+  cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--rose),var(--rose-d));
+  box-shadow:0 8px 20px rgba(232,93,138,.4);transition:transform .2s,box-shadow .2s,opacity .2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(232,93,138,.5)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--rose-d);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;min-height:70px}
+#no{position:relative;transition:left .3s ease,top .3s ease}
+
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px}
+.cat{
+  background:#fff;border:3px solid transparent;border-radius:20px;padding:16px 8px;cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.07);transition:transform .2s,border-color .2s;font:inherit;color:inherit;
+}
+.cat:hover{transform:translateY(-4px)}
+.cat.sel{border-color:var(--rose);background:#fff0f5}
+.cat .ic{font-size:36px;display:block;margin-bottom:4px}
+.cat b{display:block;font-size:18px}
+.cat small{display:block;font-size:13px;opacity:.75;margin-top:4px;line-height:1.3}
+
+.venues{display:none;margin-top:16px;text-align:left}
+.venues.show{display:block;animation:fade .4s ease}
+.venues .title{font-weight:800;font-size:15px;margin:0 0 8px;color:var(--rose-d)}
+.venue{
+  display:block;width:100%;background:#fff;border:2px solid var(--peach);border-radius:14px;
+  padding:12px 16px;margin-bottom:8px;cursor:pointer;font:inherit;font-size:16px;font-weight:600;color:var(--ink);
+  text-align:left;transition:border-color .2s,background .2s;
+}
+.venue:hover{border-color:var(--rose)}
+.venue.sel{border-color:var(--rose);background:#fff0f5;color:var(--rose-d)}
+.venue.sel::before{content:"💗 "}
+.venue .vn{display:block}
+.venue .va{display:block;font-size:13px;font-weight:400;opacity:.75;margin-top:4px}
+
+label{display:block;text-align:left;font-weight:600;margin:14px 0 6px;font-size:15px}
+input[type=date],input[type=time],textarea{
+  width:100%;font:inherit;padding:12px 14px;border-radius:14px;border:2px solid var(--peach);
+  background:#fff;color:var(--ink);outline:none;
+}
+input:focus,textarea:focus{border-color:var(--rose)}
+textarea{resize:vertical;min-height:90px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.summary{background:#fff0f5;border-radius:18px;padding:16px;margin:18px 0;text-align:left;font-size:16px;line-height:1.6}
+.summary b{color:var(--rose-d)}
+.msg{background:#fff;border:2px dashed var(--peach);border-radius:16px;padding:14px;text-align:left;font-size:15px;white-space:pre-wrap;margin:14px 0}
+.hint{font-size:14px;opacity:.7;margin-top:12px;min-height:20px}
+.ok{color:var(--rose-d);font-weight:800;margin-top:10px;min-height:22px}
+.burst{position:fixed;font-size:24px;pointer-events:none;z-index:2;animation:pop 1.2s ease-out forwards}
+@keyframes pop{to{transform:translate(var(--dx),var(--dy)) scale(.4);opacity:0}}
+
+@media (max-width:480px){
+  h1{font-size:34px}.two{grid-template-columns:1fr}.card{padding:28px 18px}
+}
+</style>
+</head>
+<body>
+<div class="float" id="float"></div>
+
+<main class="card">
+
+  <!-- Шаг 1: главный вопрос -->
+  <section class="step active" id="s1">
+    <div class="heart">💖</div>
+    <h1>Ты пойдёшь со мной на свидание?</h1>
+    <p class="lead">Мне очень хочется провести с тобой чудесный вечер ✨</p>
+    <div class="row">
+      <button class="btn" id="yes">Да, конечно! 💕</button>
+      <button class="btn ghost" id="no">Нет</button>
+    </div>
+    <p class="hint" id="noHint">&nbsp;</p>
+  </section>
+
+  <!-- Шаг 2: категория и заведение -->
+  <section class="step" id="s2">
+    <h2>Куда пойдём?</h2>
+    <p class="lead">Сначала выбери, что хочется, а потом место</p>
+    <div class="cats" id="cats">
+      <button class="cat" data-c="Кино"><span class="ic">🎬</span><b>Кино</b><small>Фильм и попкорн</small></button>
+      <button class="cat" data-c="Парк"><span class="ic">🌳</span><b>Парк</b><small>Прогулка и закат</small></button>
+      <button class="cat" data-c="Кофейня"><span class="ic">☕</span><b>Кофейня</b><small>Уютный разговор</small></button>
+      <button class="cat" data-c="Боулинг"><span class="ic">🎳</span><b>Боулинг</b><small>Игра, смех и азарт</small></button>
+    </div>
+    <div class="venues" id="venues">
+      <p class="title" id="venueTitle"></p>
+      <div id="venueList"></div>
+    </div>
+    <div class="row" style="margin-top:18px">
+      <button class="btn ghost" data-back="s1">← Назад</button>
+      <button class="btn" id="toS3" disabled>Дальше →</button>
+    </div>
+  </section>
+
+  <!-- Шаг 3: когда -->
+  <section class="step" id="s3">
+    <h2>Когда встретимся?</h2>
+    <p class="lead">Выбери день и время</p>
+    <div class="two">
+      <div><label for="date">Дата</label><input type="date" id="date"></div>
+      <div><label for="time">Время</label><input type="time" id="time" value="19:00"></div>
+    </div>
+    <label for="note">Личная записка (необязательно)</label>
+    <textarea id="note" placeholder="Например: надень своё любимое платье 😊"></textarea>
+    <div class="row" style="margin-top:18px">
+      <button class="btn ghost" data-back="s2">← Назад</button>
+      <button class="btn" id="toS4">Готово →</button>
+    </div>
+    <p class="ok" id="err"></p>
+  </section>
+
+  <!-- Шаг 4: итог -->
+  <section class="step" id="s4">
+    <div class="heart">💌</div>
+    <h2>Приглашение готово!</h2>
+    <div class="summary" id="sum"></div>
+    <div class="msg" id="msgText"></div>
+    <div class="row">
+      <button class="btn" id="copy">Скопировать текст 📋</button>
+      <button class="btn ghost" id="again">Начать заново</button>
+    </div>
+    <p class="ok" id="copyOk"></p>
+  </section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const steps = { s1: $('s1'), s2: $('s2'), s3: $('s3'), s4: $('s4') };
+const state = { cat: null, venue: null, date: '', time: '', note: '' };
+
+// Категории и заведения
+const CATS = {
+  Кино:    { icon: '🎬', desc: 'фильм, попкорн и тёплые руки в темноте', title: 'Где смотрим фильм?',
+             venues: [{ name: 'Kinopark 7' }, { name: 'Aqtobe Mall' }] },
+  Парк:    { icon: '🌳', desc: 'прогулка, закат и тихие разговоры', title: 'В каком парке гуляем?',
+             venues: ['Парк Первого Президента', 'Yurta Park', 'Триатлон-парк'] },
+  Кофейня: { icon: '☕', desc: 'уютный разговор за любимым напитком', title: 'В какую кофейню идём?',
+             venues: ['Bodrum Coffee', 'Kofeynya', 'Urban'] },
+  Боулинг: { icon: '🎳', desc: 'весёлая игра, смех и азарт', title: 'Где играем в боулинг?',
+             venues: [{ name: 'Bono Bowling' }, { name: 'Aqtobe Mall' }, { name: 'Point Bowling' }] }
+};
+
+function go(id) {
+  Object.values(steps).forEach(s => s.classList.remove('active'));
+  steps[id].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Фон: падающие сердечки
+const fl = $('float'), hearts = ['💗', '💕', '💖', '🌸', '✨'];
+for (let i = 0; i < 18; i++) {
+  const s = document.createElement('span');
+  s.textContent = hearts[i % hearts.length];
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.fontSize = (14 + Math.random() * 22) + 'px';
+  s.style.animationDuration = (9 + Math.random() * 10) + 's';
+  s.style.animationDelay = (-Math.random() * 15) + 's';
+  fl.appendChild(s);
+}
+
+// Кнопка «Нет» убегает
+const no = $('no');
+function dodge() {
+  const x = (Math.random() - 0.5) * 240, y = (Math.random() - 0.5) * 80;
+  no.style.left = x + 'px'; no.style.top = y + 'px';
+  $('noHint').textContent = ['Подумай ещё 🥺', 'Ну пожалуйста!', 'Кнопка «Да» ждёт 💕', 'Ты точно уверен(а)?'][Math.floor(Math.random() * 4)];
+}
+no.addEventListener('mouseenter', dodge);
+no.addEventListener('touchstart', e => { e.preventDefault(); dodge(); }, { passive: false });
+no.addEventListener('click', dodge);
+
+// Салют сердечек
+function burst(x, y) {
+  for (let i = 0; i < 14; i++) {
+    const b = document.createElement('div');
+    b.className = 'burst';
+    b.textContent = ['💖', '✨', '💕', '🌹'][i % 4];
+    b.style.left = x + 'px'; b.style.top = y + 'px';
+    const a = Math.random() * Math.PI * 2, d = 80 + Math.random() * 120;
+    b.style.setProperty('--dx', Math.cos(a) * d + 'px');
+    b.style.setProperty('--dy', Math.sin(a) * d + 'px');
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 1300);
+  }
+}
+$('yes').addEventListener('click', e => {
+  burst(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+  setTimeout(() => go('s2'), 350);
+});
+
+// Шаг 2: категория → заведение
+function setNextEnabled(on) { $('toS3').disabled = !on; }
+
+document.querySelectorAll('.cat').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const c = btn.dataset.c;
+    document.querySelectorAll('.cat').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    state.cat = c;
+    state.venue = null;
+    setNextEnabled(false);
+
+    $('venueTitle').textContent = CATS[c].title;
+    const list = $('venueList');
+    list.innerHTML = '';
+    CATS[c].venues.map(x => typeof x === 'string' ? { name: x } : x).forEach(v => {
+      const vb = document.createElement('button');
+      vb.className = 'venue';
+      vb.innerHTML = '<span class="vn">' + v.name + '</span>' + (v.addr ? '<span class="va">📍 ' + v.addr + '</span>' : '');
+      vb.addEventListener('click', () => {
+        list.querySelectorAll('.venue').forEach(x => x.classList.remove('sel'));
+        vb.classList.add('sel');
+        state.venue = v.name;
+        setNextEnabled(true);
+      });
+      list.appendChild(vb);
+    });
+    $('venues').classList.add('show');
+  });
+});
+$('toS3').addEventListener('click', () => go('s3'));
+
+// Минимальная дата — сегодня
+const today = new Date();
+$('date').min = new Date(today - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
+// Шаг 3 → 4
+$('toS4').addEventListener('click', () => {
+  const d = $('date').value, t = $('time').value;
+  if (!d) { $('err').textContent = 'Выбери, пожалуйста, дату 🌷'; return; }
+  $('err').textContent = '';
+  state.date = new Date(d + 'T00:00').toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+  state.time = t;
+  state.note = $('note').value.trim();
+  renderFinal();
+  go('s4');
+});
+
+function renderFinal() {
+  const c = CATS[state.cat];
+  $('sum').innerHTML =
+    `<b>Куда:</b> ${c.icon} ${state.cat} — ${state.venue}<br>` +
+    `<b>Когда:</b> ${state.date}, в ${state.time}` +
+    (state.note ? `<br><b>Записка:</b> ${state.note}` : '');
+  $('msgText').textContent =
+    `Привет! Приглашаю тебя на свидание 💕\n\n` +
+    `Куда: ${state.venue} (${state.cat.toLowerCase()}), ${c.desc}.\n` +
+    `Когда: ${state.date}, в ${state.time}.` +
+    (state.note ? `\n\n${state.note}` : '') +
+    `\n\nДаёшь согласие? 🌹`;
+}
+
+// Копирование
+$('copy').addEventListener('click', async () => {
+  const text = $('msgText').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+  }
+  $('copyOk').textContent = 'Текст скопирован, можно отправить! 💌';
+});
+
+// Назад
+document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => go(b.dataset.back)));
+
+// Начать заново
+$('again').addEventListener('click', () => {
+  state.cat = null; state.venue = null;
+  document.querySelectorAll('.cat').forEach(b => b.classList.remove('sel'));
+  $('venues').classList.remove('show'); $('venueList').innerHTML = '';
+  setNextEnabled(false);
+  $('copyOk').textContent = ''; $('note').value = ''; $('date').value = '';
+  no.style.left = '0'; no.style.top = '0'; $('noHint').innerHTML = '&nbsp;';
+  go('s1');
+});
+</script>
+</body>
+</html>
